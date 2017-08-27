@@ -7,7 +7,6 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Drawing.Imaging;
-using System.Diagnostics;
 
 namespace PicViewer2._0
 {
@@ -28,7 +27,7 @@ namespace PicViewer2._0
 
         double WidthDouble, HeightDouble;
         //int WidthInt, HeightInt;
-        Bitmap LoadedImage, ScaledImage, MaxNativeSizeImage;
+        Bitmap LoadedImage, MaxNativeSizeImage; //ScaledImage
 
 
         [DllImport("user32.dll")]
@@ -157,12 +156,9 @@ namespace PicViewer2._0
             //LoadImageFromFile("C:/Users/Андрей/Pictures/tracert 2.png");
             //LoadImageFromFile("C:/Users/Андрей/Pictures/DeskBack/12.jpeg");
             //LoadImageFromFile("C:/Users/Андрей/Desktop/_/Projects/1_Personal/Ruler Command Seal/промежуточные/ruler.png");
-            
-            InitializeComponent();
 
-            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
-            FileVersionInfo _fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
-            this.Title = "PicViewer(v" + _fvi.FileVersion + ") - " + Path.GetFileName(args[1]); 
+            InitializeComponent();
+            this.Title = "PicViewer2.0 - " + Path.GetFileName(args[1]);
         }
 
 
