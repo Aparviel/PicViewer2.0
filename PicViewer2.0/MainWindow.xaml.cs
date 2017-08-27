@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Drawing.Imaging;
+using System.Diagnostics;
 
 namespace PicViewer2._0
 {
@@ -158,7 +159,10 @@ namespace PicViewer2._0
             //LoadImageFromFile("C:/Users/Андрей/Desktop/_/Projects/1_Personal/Ruler Command Seal/промежуточные/ruler.png");
             
             InitializeComponent();
-            this.Title = "PicViewer(v2.0.4.13) - " + Path.GetFileName(args[1]);
+
+            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            FileVersionInfo _fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+            this.Title = "PicViewer(v" + _fvi.FileVersion + ") - " + Path.GetFileName(args[1]); 
         }
 
 
