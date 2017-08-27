@@ -1,0 +1,18 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="PicViewer2._0.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="MaxStartSize" Type="System.UInt32" Scope="User">
+      <Value Profile="(Default)">800</Value>
+    </Setting>
+    <Setting Name="MinimumSize" Type="System.UInt32" Scope="User">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
+    <Setting Name="ScaleMultiplierUp" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">1.09</Value>
+    </Setting>
+    <Setting Name="ScaleMultiplierDown" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0.91</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
