@@ -1,12 +1,12 @@
 ﻿using System;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Drawing;
-using System.Runtime.InteropServices;
-using System.IO;
-using System.Drawing.Imaging;
 
 namespace PicViewer2._0
 {
@@ -350,8 +350,17 @@ namespace PicViewer2._0
             {
                 ScaleDownWindow();
             }
-        }
 
+            if (e.Key == Key.S)
+            {
+                this.Hide();
+                SettingsWindow _SettingsWindow = new SettingsWindow();
+                System.Windows.Point _Mouse = GetMousePosition();
+                _SettingsWindow.Show();
+                _SettingsWindow.Top = _Mouse.Y - (_SettingsWindow.Height / 2d);
+                _SettingsWindow.Left = _Mouse.X - (_SettingsWindow.Width / 2d);
+            }
+        }
 
     }
 }
