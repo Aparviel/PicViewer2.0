@@ -26,8 +26,7 @@ namespace PicViewer2._0
         bool Undersize = false;
 
         double WidthDouble, HeightDouble;
-        //int WidthInt, HeightInt;
-        Bitmap LoadedImage, MaxNativeSizeImage; //ScaledImage
+        Bitmap LoadedImage, MaxNativeSizeImage;
 
 
         [DllImport("user32.dll")]
@@ -57,7 +56,6 @@ namespace PicViewer2._0
             _Out.StreamSource = _MemStr;
             _Out.EndInit();
             return _Out;
-            //P.S. С этим всем надо что-то делать
         }
 
 
@@ -146,17 +144,6 @@ namespace PicViewer2._0
 
             LoadImageFromFile(args[1]);
 
-            //this.Background = new ImageBrush(new BitmapImage(new Uri(args[1])));
-            //SetBackImage
-            //LoadImageFromFile(args[0]);
-            //LoadImageFromFile("C:/Users/Андрей/Pictures/2.png");
-            //LoadImageFromFile("C:/Users/Андрей/Pictures/test.png");
-            //LoadImageFromFile("C:/Users/Андрей/Pictures/1-3-0-2.png");
-            //LoadImageFromFile("C:/Users/Андрей/Pictures/novec.png");
-            //LoadImageFromFile("C:/Users/Андрей/Pictures/tracert 2.png");
-            //LoadImageFromFile("C:/Users/Андрей/Pictures/DeskBack/12.jpeg");
-            //LoadImageFromFile("C:/Users/Андрей/Desktop/_/Projects/1_Personal/Ruler Command Seal/промежуточные/ruler.png");
-
             InitializeComponent();
             this.Title = "PicViewer2.0 - " + Path.GetFileName(args[1]);
         }
@@ -197,14 +184,8 @@ namespace PicViewer2._0
                 WidthDouble = _LoadedImageWidth / (_LoadedImageHeight / HeightDouble);
             }
 
-            //WidthInt = Convert.ToInt32(WidthDouble);
-            //HeightInt = Convert.ToInt32(HeightDouble);
-
-            //ScaledImage = new Bitmap(LoadedImage, WidthInt, HeightInt);
-
             System.Windows.Point _Mouse = GetMousePosition();
             SetWindowPosition(_Mouse.X - (WidthDouble / 2d), _Mouse.Y - (HeightDouble / 2d));
-
             SetWindowSize(HeightDouble, WidthDouble);
             SetBackBitmapImage(ConvertToBitmapImage(MaxNativeSizeImage));
         }
@@ -253,10 +234,7 @@ namespace PicViewer2._0
             if (Oversize == false)
             {
                 ScaleUpWindowCalculation(WidthDouble, HeightDouble);
-                //WidthInt = Convert.ToInt32(WidthDouble);
-                //HeightInt = Convert.ToInt32(HeightDouble);
-
-                //SetBackBitmapImage(ConvertToBitmapImage(ScaledImage = new Bitmap(LoadedImage, WidthInt, HeightInt)));
+                
                 SetWindowPosition(this.Left - ((WidthDouble - this.Width) / 2d),
                                   this.Top - ((HeightDouble - this.Height) / 2d));
                 SetWindowSize(HeightDouble, WidthDouble);
@@ -304,17 +282,13 @@ namespace PicViewer2._0
             if (Undersize == false)
             {
                 ScaleDownWindowCalculation(WidthDouble, HeightDouble);
-                //WidthInt = Convert.ToInt32(WidthDouble);
-                //HeightInt = Convert.ToInt32(HeightDouble);
-                double cachew = this.Width;
-                double cacheh = this.Height;
+
+                double _CacheW = this.Width;
+                double _CacheH = this.Height;
 
                 SetWindowSize(HeightDouble, WidthDouble);
-
-
-                SetWindowPosition(this.Left + ((cachew - WidthDouble) / 2d),
-                                  this.Top + ((cacheh - HeightDouble) / 2d));
-                //SetBackBitmapImage(ConvertToBitmapImage(ScaledImage = new Bitmap(LoadedImage, WidthInt, HeightInt)));
+                SetWindowPosition(this.Left + ((_CacheW - WidthDouble) / 2d),
+                                  this.Top + ((_CacheH - HeightDouble) / 2d));
 
                 if (Oversize == true)
                 {
@@ -338,7 +312,7 @@ namespace PicViewer2._0
         }
 
 
-        //Обработка нажатия стрелок ВВЕРХ и ВНИЗ
+        //Обработка нажатия клавиш
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Up)
