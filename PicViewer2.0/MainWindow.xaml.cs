@@ -2,47 +2,57 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
 namespace PicViewer2._0
 {
     /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
+    /// MainWindow
     /// </summary>
     public partial class MainWindow : Window
     {
-        uint MaxStartSize = Properties.Settings.Default.MaxStartSize;
-        uint MinimumSize = Properties.Settings.Default.MinimumSize;
-        double ScaleMultiplierUp = Properties.Settings.Default.ScaleMultiplierUp;
-        double ScaleMultiplierDown = Properties.Settings.Default.ScaleMultiplierDown;
+        static uint MaxStartSize = Properties.Settings.Default.MaxStartSize;
+        static uint MinimumSize = Properties.Settings.Default.MinimumSize;
+        static double ScaleMultiplierUp = Properties.Settings.Default.ScaleMultiplierUp;
+        static double ScaleMultiplierDown = Properties.Settings.Default.ScaleMultiplierDown;
 
-        int ScreenWidth = Convert.ToInt32(System.Windows.SystemParameters.PrimaryScreenWidth);
-        int ScreenHeight = Convert.ToInt32(System.Windows.SystemParameters.PrimaryScreenHeight);
+        static int ScreenWidth = Convert.ToInt32(SystemParameters.PrimaryScreenWidth);
+        static int ScreenHeight = Convert.ToInt32(SystemParameters.PrimaryScreenHeight);
+
         bool Oversize = false;
         bool Undersize = false;
-
+        
         double WidthDouble, HeightDouble;
         Bitmap LoadedImage, MaxNativeSizeImage;
-
+        
         bool IsCanvasShown = false;
+
         System.Windows.Point CurrentPoint = new System.Windows.Point();
 
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        internal static extern bool GetCursorPos(ref System.Drawing.Point pt);
+
         /// <summary>
-        /// Возвращает позицию курсора
+        /// Реализует анимацию появления окна
         /// </summary>
-        private static System.Windows.Point GetMousePosition()
+        private void FadeInAnimation()
         {
-            System.Drawing.Point pt = new System.Drawing.Point();
-            GetCursorPos(ref pt);
-            return new System.Windows.Point(pt.X, pt.Y);
+            DoubleAnimation _FadeIn = new DoubleAnimation(1, new TimeSpan(0, 0, 0, 0, 300));
+            this.BeginAnimation(OpacityProperty, _FadeIn);
+        }
+
+
+        /// <summary>
+        /// Реализует анимацию закрытия окна
+        /// </summary>
+        private void FadeOutAnimation()
+        {
+            DoubleAnimation _FadeOut = new DoubleAnimation(0, new TimeSpan(0, 0, 0, 0, 100));
+            _FadeOut.Completed += FadeOutAnimation_Completed;
+            this.BeginAnimation(OpacityProperty, _FadeOut);
         }
 
 
@@ -125,15 +135,28 @@ namespace PicViewer2._0
         }
 
 
-        //Закрывает программу при нажатии ПКМ по главному окну
+        /// <summary>
+        /// Запускает анимацию исчезновения окна
+        /// </summary>
         private void Window_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            FadeOutAnimation();
+        }
+
+
+        /// <summary>
+        /// Закрывает приложение после окончания анимации исчезновения
+        /// </summary>
+        private void FadeOutAnimation_Completed(object sender, EventArgs e)
         {
             this.Hide();
             Environment.Exit(0);
         }
 
 
-        //Перемещает главное окно при зажатии на нём ЛКМ
+        /// <summary>
+        /// Перемещает главное окно при зажатии на нём ЛКМ
+        /// </summary>
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (IsCanvasShown == false)
@@ -143,7 +166,7 @@ namespace PicViewer2._0
         }
 
 
-        //ГЛАВНОЕ ОКНО до инициализации
+        //ГЛАВНОЕ ОКНО
         public MainWindow()
         {
             string[] args = Environment.GetCommandLineArgs();
@@ -190,10 +213,17 @@ namespace PicViewer2._0
                 WidthDouble = _LoadedImageWidth / (_LoadedImageHeight / HeightDouble);
             }
 
-            System.Windows.Point _Mouse = GetMousePosition();
+            System.Windows.Point _Mouse = NativeMethods.GetMousePosition();
             SetWindowPosition(_Mouse.X - (WidthDouble / 2d), _Mouse.Y - (HeightDouble / 2d));
             SetWindowSize(HeightDouble, WidthDouble);
             SetBackBitmapImage(ConvertToBitmapImage(MaxNativeSizeImage));
+        }
+
+
+        //ГЛАВНОЕ ОКНО после загрузки
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            FadeInAnimation();
         }
 
 
@@ -321,39 +351,42 @@ namespace PicViewer2._0
         //Обработка нажатия клавиш
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Up)
+            switch (e.Key)
             {
-                ScaleUpWindow();
-            }
+                case Key.Up:
+                    ScaleUpWindow();
+                    break;
 
-            if (e.Key == Key.Down)
-            {
-                ScaleDownWindow();
-            }
+                case Key.Down:
+                    ScaleDownWindow();
+                    break;
 
-            if (e.Key == Key.S)
-            {
-                this.Hide();
-                SettingsWindow _SettingsWindow = new SettingsWindow();
-                System.Windows.Point _Mouse = GetMousePosition();
-                _SettingsWindow.Show();
-                _SettingsWindow.Top = _Mouse.Y - (_SettingsWindow.Height / 2d);
-                _SettingsWindow.Left = _Mouse.X - (_SettingsWindow.Width / 2d);
-            }
+                case Key.S:
+                    this.Hide();
+                    SettingsWindow _SettingsWindow = new SettingsWindow();
+                    System.Windows.Point _Mouse = NativeMethods.GetMousePosition();
+                    _SettingsWindow.Show();
+                    _SettingsWindow.Top = _Mouse.Y - (_SettingsWindow.Height / 2d);
+                    _SettingsWindow.Left = _Mouse.X - (_SettingsWindow.Width / 2d);
+                    break;
 
-            if (e.Key == Key.C)
-            {
-                ShowCanvas();
-            }
+                case Key.C:
+                    ShowCanvas();
+                    break;
 
-            if (e.Key == Key.V)
-            {
-                HideCanvas();
+                case Key.V:
+                    HideCanvas();
+                    break;
+
+                default:
+                    break;
             }
         }
 
 
-        // Рисует линию
+        /// <summary>
+        /// Рисует линию на canvas
+        /// </summary>
         private void DrawingCanvas_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
@@ -375,6 +408,10 @@ namespace PicViewer2._0
             }
         }
 
+
+        /// <summary>
+        /// Получает координаты курсора при нажатии ЛКМ по canvas
+        /// </summary>
         private void DrawingCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ButtonState == MouseButtonState.Pressed)
@@ -384,23 +421,37 @@ namespace PicViewer2._0
         }
 
 
-        //Показывает элемент canvas и устанавливает фон
+        /// <summary>
+        /// Устанавливает фон Canvas, удаляет фон формы и разворачивает Canvas
+        /// </summary>
         private void ShowCanvas()
         {
-            DrawingCanvas.Background = this.Background;
-            DrawingCanvas.Height = this.Height;
-            DrawingCanvas.Width = this.Width;
-            IsCanvasShown = true;
+            if (IsCanvasShown == false)
+            { 
+                DrawingCanvas.Background = this.Background;
+                this.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
+                DrawingCanvas.Height = this.Height;
+                DrawingCanvas.Width = this.Width;
+
+                IsCanvasShown = true;
+            }
         }
 
 
-        //Скрывает элемент canvas и очищает содержимое
+        /// <summary>
+        /// Скрывает и очищает Canvas, возвращает фон формы
+        /// </summary>
         private void HideCanvas()
         {
-            DrawingCanvas.Children.Clear();
-            DrawingCanvas.Height = 0;
-            DrawingCanvas.Width = 0;
-            IsCanvasShown = false;
+            if (IsCanvasShown == true)
+            {
+                SetBackBitmapImage(ConvertToBitmapImage(MaxNativeSizeImage));
+                DrawingCanvas.Children.Clear();
+                DrawingCanvas.Height = 0;
+                DrawingCanvas.Width = 0;
+
+                IsCanvasShown = false;
+            }
         }
     }
 }
