@@ -5,13 +5,14 @@ using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
 namespace PicViewer2._0
 {
     /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
+    /// MainWindow
     /// </summary>
     public partial class MainWindow : Window
     {
@@ -20,8 +21,8 @@ namespace PicViewer2._0
         static double ScaleMultiplierUp = Properties.Settings.Default.ScaleMultiplierUp;
         static double ScaleMultiplierDown = Properties.Settings.Default.ScaleMultiplierDown;
 
-        static int ScreenWidth = Convert.ToInt32(System.Windows.SystemParameters.PrimaryScreenWidth);
-        static int ScreenHeight = Convert.ToInt32(System.Windows.SystemParameters.PrimaryScreenHeight);
+        static int ScreenWidth = Convert.ToInt32(SystemParameters.PrimaryScreenWidth);
+        static int ScreenHeight = Convert.ToInt32(SystemParameters.PrimaryScreenHeight);
 
         bool Oversize = false;
         bool Undersize = false;
@@ -32,6 +33,27 @@ namespace PicViewer2._0
         bool IsCanvasShown = false;
 
         System.Windows.Point CurrentPoint = new System.Windows.Point();
+
+
+        /// <summary>
+        /// Реализует анимацию появления окна
+        /// </summary>
+        private void FadeInAnimation()
+        {
+            DoubleAnimation _FadeIn = new DoubleAnimation(1, new TimeSpan(0, 0, 0, 0, 300));
+            this.BeginAnimation(OpacityProperty, _FadeIn);
+        }
+
+
+        /// <summary>
+        /// Реализует анимацию закрытия окна
+        /// </summary>
+        private void FadeOutAnimation()
+        {
+            DoubleAnimation _FadeOut = new DoubleAnimation(0, new TimeSpan(0, 0, 0, 0, 100));
+            _FadeOut.Completed += FadeOutAnimation_Completed;
+            this.BeginAnimation(OpacityProperty, _FadeOut);
+        }
 
 
         /// <summary>
@@ -113,15 +135,28 @@ namespace PicViewer2._0
         }
 
 
-        //Закрывает программу при нажатии ПКМ по главному окну
+        /// <summary>
+        /// Запускает анимацию исчезновения окна
+        /// </summary>
         private void Window_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            FadeOutAnimation();
+        }
+
+
+        /// <summary>
+        /// Закрывает приложение после окончания анимации исчезновения
+        /// </summary>
+        private void FadeOutAnimation_Completed(object sender, EventArgs e)
         {
             this.Hide();
             Environment.Exit(0);
         }
 
 
-        //Перемещает главное окно при зажатии на нём ЛКМ
+        /// <summary>
+        /// Перемещает главное окно при зажатии на нём ЛКМ
+        /// </summary>
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (IsCanvasShown == false)
@@ -131,7 +166,7 @@ namespace PicViewer2._0
         }
 
 
-        //ГЛАВНОЕ ОКНО до инициализации
+        //ГЛАВНОЕ ОКНО
         public MainWindow()
         {
             string[] args = Environment.GetCommandLineArgs();
@@ -182,6 +217,13 @@ namespace PicViewer2._0
             SetWindowPosition(_Mouse.X - (WidthDouble / 2d), _Mouse.Y - (HeightDouble / 2d));
             SetWindowSize(HeightDouble, WidthDouble);
             SetBackBitmapImage(ConvertToBitmapImage(MaxNativeSizeImage));
+        }
+
+
+        //ГЛАВНОЕ ОКНО после загрузки
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            FadeInAnimation();
         }
 
 
@@ -342,7 +384,9 @@ namespace PicViewer2._0
         }
 
 
-        //Рисует линию
+        /// <summary>
+        /// Рисует линию на canvas
+        /// </summary>
         private void DrawingCanvas_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
@@ -364,6 +408,10 @@ namespace PicViewer2._0
             }
         }
 
+
+        /// <summary>
+        /// Получает координаты курсора при нажатии ЛКМ по canvas
+        /// </summary>
         private void DrawingCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ButtonState == MouseButtonState.Pressed)
