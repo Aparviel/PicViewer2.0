@@ -44,35 +44,14 @@ namespace PicViewer2._0
         private void SmoothResize(double startX, double startY, double targetX, double targetY,
                                   double startWidth, double startHeight, double targetWidth, double targetHeight)
         {
-            if (Resizing == false)
+            if(Resizing == false)
             {
                 Resizing = true;
-
-                double _StepX = (startX - targetX) / SmoothResizeSteps,
-                       _StepY = (startY - targetY) / SmoothResizeSteps,
-                       _StepWidth = (targetWidth - startWidth) / SmoothResizeSteps,
-                       _StepHeight = (targetHeight - startHeight) / SmoothResizeSteps;
-
-                double[] _X = new double[SmoothResizeSteps],
-                         _Y = new double[SmoothResizeSteps],
-                         _Width = new double[SmoothResizeSteps],
-                         _Height = new double[SmoothResizeSteps];
-
-                _X[0] = startX - _StepX;
-                _Y[0] = startY - _StepY;
-                _Width[0] = startWidth + _StepWidth;
-                _Height[0] = startHeight + _StepHeight;
-
-                for (int i = 1; i < SmoothResizeSteps; i++)
-                {
-                    _X[i] = _X[i - 1] - _StepX;
-                    _Y[i] = _Y[i - 1] - _StepY;
-                    _Width[i] = _Width[i - 1] + _StepWidth;
-                    _Height[i] = _Height[i - 1] + _StepHeight;
-                }
-
-                SetWindowSizeAndPosition(_Height, _Width, _X, _Y);
-
+                SetWindowSizeAndPositionBySteps((targetHeight - startHeight) / SmoothResizeSteps,
+                                     (targetWidth - startWidth) / SmoothResizeSteps,
+                                     (targetX - startX) / SmoothResizeSteps,
+                                     (targetY - startY) / SmoothResizeSteps,
+                                     targetX, targetY, targetWidth, targetHeight);
                 Resizing = false;
             }
         }
@@ -116,7 +95,7 @@ namespace PicViewer2._0
 
 
         /// <summary>
-        /// Загружает изображение из файла в LoadedImage(Bitmap)
+        /// Загружает изображение из файла в LoadedImage
         /// </summary>
         private void LoadImageFromFile(string path)
         {
@@ -125,7 +104,7 @@ namespace PicViewer2._0
 
 
         /// <summary>
-        /// Устанавливает фоном окна изображение(тип BitmapImage)
+        /// Устанавливает фоном окна изображение
         /// </summary>
         private void SetBackBitmapImage(BitmapImage image)
         {
@@ -154,17 +133,23 @@ namespace PicViewer2._0
      
 
         /// <summary>
-        /// Плавно меняет параметры окна проходя по массивам значений
+        /// Плавно меняет параметры окна по шагам
         /// </summary>
-        private void SetWindowSizeAndPosition(double[] height, double[] width, double[] x, double[] y)
+        private void SetWindowSizeAndPositionBySteps(double heightStep, double widthStep, double xStep, double yStep,
+                                                     double targetX, double targetY, double targetWidth, double targetHeight)
         {
-            for (int i = 0; i < SmoothResizeSteps; i++)
+            for (int i = 0; i < SmoothResizeSteps - 1; i++)
             {
-                this.Top = y[i];
-                this.Height = height[i];
-                this.Left = x[i];
-                this.Width = width[i];
+                this.Top += yStep;
+                this.Left += xStep;
+                this.Height += heightStep;
+                this.Width += widthStep;
             }
+
+            this.Top = targetY;
+            this.Left = targetX;
+            this.Height = targetHeight;
+            this.Width = targetWidth;
         }
 
 
@@ -240,7 +225,9 @@ namespace PicViewer2._0
         }
 
 
-        //ГЛАВНОЕ ОКНО после инициализации
+        /// <summary>
+        /// Рассчитывает первоначальные размеры изображения, устанавливает фон и перемещает на место курсора
+        /// </summary>
         private void Window_Initialized(object sender, EventArgs e)
         {
             double _LoadedImageHeight = LoadedImage.Height;
@@ -282,7 +269,9 @@ namespace PicViewer2._0
         }
 
 
-        //ГЛАВНОЕ ОКНО после загрузки
+        /// <summary>
+        /// Запускает анимацию появления
+        /// </summary>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             FadeInAnimation();
@@ -349,6 +338,7 @@ namespace PicViewer2._0
         /// </summary>
         private void ScaleDownWindowCalculation(double width, double height)
         {
+            //Андерсайз по ширине
             if (((WidthDouble * ScaleMultiplierDown) < MinimumSize) || Undersize == true)
             {
                 Undersize = true;
@@ -360,6 +350,7 @@ namespace PicViewer2._0
                 HeightDouble = height * ScaleMultiplierDown;
             }
 
+            //Андерсайз по высоте
             if (((HeightDouble * ScaleMultiplierDown) < MinimumSize) || Undersize == true)
             {
                 Undersize = true;
@@ -391,7 +382,9 @@ namespace PicViewer2._0
         }
 
 
-        //Обработка прокрутки колеса
+        /// <summary>
+        /// Обрабатывает прокрутку колеса мыши
+        /// </summary>
         private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (e.Delta > 0)
@@ -405,7 +398,9 @@ namespace PicViewer2._0
         }
 
 
-        //Обработка нажатия клавиш
+        /// <summary>
+        /// Обрабатывает нажатия кнопок мыши
+        /// </summary>
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             switch (e.Key)

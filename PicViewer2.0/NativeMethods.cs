@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 
 namespace PicViewer2._0
 {
@@ -17,5 +18,13 @@ namespace PicViewer2._0
             GetCursorPos(ref pt);
             return new System.Windows.Point(pt.X, pt.Y);
         }
+
+
+        [DllImport("shell32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+
+        /// <summary>
+        /// Уведомляет Explorer об изменении ассоциаций файлов
+        /// </summary>
+        public static extern void SHChangeNotify(uint wEventId, uint uFlags, IntPtr dwItem1, IntPtr dwItem2);
     }
 }
