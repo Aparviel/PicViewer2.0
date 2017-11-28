@@ -11,7 +11,6 @@ namespace PicViewer2._0
     /// </summary>
     public partial class SettingsWindow : Window
     {
-
         /// <summary>
         /// Инициализирует окно настроек
         /// </summary>
@@ -26,6 +25,7 @@ namespace PicViewer2._0
             this.ScaleDownLabel.Content = ScaleDownSlider.Value;
         }
 
+
         /// <summary>
         /// Реализует перемещение окна настроек
         /// </summary>
@@ -33,6 +33,7 @@ namespace PicViewer2._0
         {
             this.DragMove();
         }
+
 
         /// <summary>
         /// Скрывает окно настроек и завершает программу
@@ -42,6 +43,7 @@ namespace PicViewer2._0
             this.Hide();
             Environment.Exit(0);
         }
+
 
         /// <summary>
         /// Сохраняет настройки программы
@@ -53,6 +55,7 @@ namespace PicViewer2._0
             Properties.Settings.Default.Save();
         }
 
+
         /// <summary>
         /// Отображает текущее значение слайдера ScaleUpSlider
         /// </summary>
@@ -61,6 +64,7 @@ namespace PicViewer2._0
             this.ScaleUpLabel.Content = Math.Round(ScaleUpSlider.Value, 2);
         }
 
+
         /// <summary>
         /// Отображает текущее значение слайдера ScaleDownSlider
         /// </summary>
@@ -68,6 +72,7 @@ namespace PicViewer2._0
         {
             this.ScaleDownLabel.Content = Math.Round(ScaleDownSlider.Value, 2);
         }
+
 
         /// <summary>
         /// Привязывает поддерживаемые расширения к приложению
@@ -81,6 +86,7 @@ namespace PicViewer2._0
             SetFileAssociation(".tiff");
         }
 
+
         /// <summary>
         /// Редактирует реестр для привязки расширения к приложению
         /// </summary>
@@ -88,7 +94,6 @@ namespace PicViewer2._0
         {
             string _KeyName = "PicViewer2.0";
             string _OpenWith = Assembly.GetEntryAssembly().Location;
-            string _FileDescription = extension.Replace(".", "").ToUpper();
 
             RegistryKey _BaseKey;
             RegistryKey _OpenMethod;
@@ -99,10 +104,9 @@ namespace PicViewer2._0
             _BaseKey.SetValue("", _KeyName);
 
             _OpenMethod = Registry.ClassesRoot.CreateSubKey(_KeyName);
-            _OpenMethod.SetValue("", "Файл " + '\u0022' + _FileDescription + '\u0022');
+            
             _OpenMethod.CreateSubKey("DefaultIcon").SetValue("", "\"" + _OpenWith + "\",0");
             _Shell = _OpenMethod.CreateSubKey("Shell");
-            _Shell.CreateSubKey("edit").CreateSubKey("command").SetValue("", "\"" + _OpenWith + "\"" + " \"%1\"");
             _Shell.CreateSubKey("open").CreateSubKey("command").SetValue("", "\"" + _OpenWith + "\"" + " \"%1\"");
             _BaseKey.Close();
             _OpenMethod.Close();
