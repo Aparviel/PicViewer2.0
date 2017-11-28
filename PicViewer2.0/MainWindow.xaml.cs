@@ -205,7 +205,9 @@ namespace PicViewer2._0
         }
 
 
-        //ГЛАВНОЕ ОКНО
+        /// <summary>
+        /// Загружает изображение и запускает инициализацию главного окна
+        /// </summary>
         public MainWindow()
         {
             string[] args = Environment.GetCommandLineArgs();
@@ -219,7 +221,6 @@ namespace PicViewer2._0
                 Environment.Exit(0);
             }
             
-
             InitializeComponent();
             this.Title = "PicViewer2.0 - " + System.IO.Path.GetFileName(args[1]);
         }

@@ -84,6 +84,7 @@ namespace PicViewer2._0
             SetFileAssociation(".png");
             SetFileAssociation(".gif");
             SetFileAssociation(".tiff");
+            SetFileAssociation(".bmp");
         }
 
 

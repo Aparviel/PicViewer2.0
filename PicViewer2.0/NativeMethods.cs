@@ -8,7 +8,6 @@ namespace PicViewer2._0
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool GetCursorPos(ref System.Drawing.Point pt);
-
         /// <summary>
         /// Возвращает позицию курсора
         /// </summary>
@@ -21,7 +20,6 @@ namespace PicViewer2._0
 
 
         [DllImport("shell32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-
         /// <summary>
         /// Уведомляет Explorer об изменении ассоциаций файлов
         /// </summary>
