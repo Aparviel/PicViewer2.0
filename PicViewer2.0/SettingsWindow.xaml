@@ -45,6 +45,5 @@
                 </TransformGroup>
             </Rectangle.RenderTransform>
         </Rectangle>
-        <Button x:Name="SetAsDefaultButton" Content="Set as default viewer" HorizontalAlignment="Left" Margin="175,200,0,0" VerticalAlignment="Top" Width="190" Height="47" FontSize="18" BorderBrush="Black" BorderThickness="1" Click="SetAsDefaultButton_Click"/>
     </Grid>
 </Window>

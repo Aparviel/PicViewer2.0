@@ -4,7 +4,22 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="PicViewer" Height="100" Width="100" WindowStyle="None" AllowsTransparency="True" Initialized="Window_Initialized" MouseRightButtonDown="Window_MouseRightButtonDown" MouseLeftButtonDown="Window_MouseLeftButtonDown" MouseWheel="Window_MouseWheel" KeyDown="Window_KeyDown" ResizeMode="NoResize" OpacityMask="Black" Opacity="0" Loaded="Window_Loaded">
-    
-    <Canvas x:Name="DrawingCanvas" HorizontalAlignment="Left" Height="0" VerticalAlignment="Top" Width="0" MouseDown="DrawingCanvas_MouseDown" MouseMove="DrawingCanvas_MouseMove"/>
+        Title="PicViewer" WindowStyle="None" AllowsTransparency="True" Initialized="Window_Initialized" MouseLeftButtonDown="Window_MouseLeftButtonDown" KeyDown="Window_KeyDown" Opacity="0" Loaded="Window_Loaded" MouseDoubleClick="Window_MouseDoubleClick" ResizeMode="NoResize" Background="{x:Null}" Foreground="{x:Null}" SizeToContent="WidthAndHeight" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" MouseUp="Window_MouseUp">
+    <Grid x:Name="Grid" Width="100" Height="100" >
+
+        <ScrollViewer x:Name="ScrollViewer" HorizontalAlignment="Left" VerticalAlignment="Top"
+                  Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UIElement}}"
+                  Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UIElement}}" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
+            <Canvas x:Name="DrawingCanvas" HorizontalAlignment="Left" VerticalAlignment="Top" MouseMove="DrawingCanvas_MouseMove" MouseWheel="DrawingCanvas_MouseWheel" MouseLeftButtonDown="DrawingCanvas_MouseLeftButtonDown"
+                Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UIElement}}"
+                Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UIElement}}" MouseRightButtonDown="DrawingCanvas_MouseRightButtonDown"/>
+        
+                
+    </ScrollViewer>
+
+    </Grid>
+   
+
+
 </Window>
+

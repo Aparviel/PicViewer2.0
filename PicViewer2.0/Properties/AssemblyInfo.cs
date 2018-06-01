@@ -12,7 +12,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Tatoe Andrew(vk.com/Aparviel)")]
 [assembly: AssemblyProduct("PicViewer2.0")]
-[assembly: AssemblyCopyright("Tatoe Andrew(vk.com/Aparviel) ©  2017")]
+[assembly: AssemblyCopyright("Tatoe Andrew(vk.com/Aparviel) ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -51,5 +51,5 @@ using System.Windows;
 // Можно задать все значения или принять номер сборки и номер редакции по умолчанию.
 // используя "*", как показано ниже:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.2.0.4")]
-[assembly: AssemblyFileVersion("2.2.0.4")]
+[assembly: AssemblyVersion("2.7.0.0")]
+[assembly: AssemblyFileVersion("2.7.0.0")]
